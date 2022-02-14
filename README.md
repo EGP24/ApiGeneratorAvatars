@@ -9,9 +9,10 @@
 
 # Запуск приложения
 1. Настроить переменные виртуального окружения
-2. Выполнить слудующую команду из корня проекта
+2. Выполнить слудующие команды из корня проекта
 ```
-   docker-compose -f docker-compose.yaml
+   docker-compose -f docker-compose.yaml biuld
+   docker-compose -f docker-compose.yaml up
 ```
 
 # Описание API
