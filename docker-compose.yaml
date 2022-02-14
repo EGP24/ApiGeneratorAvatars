@@ -1,0 +1,54 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:11
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${EE_POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${EE_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${EE_POSTGRES_DB}
+  redis:
+    image: redis:alpine
+    restart: always
+    command: redis-server --requirepass ${EE_REDIS_PASSWORD}
+    ports:
+      - 6379:6379
+    volumes:
+      - ./data/redis-data:/data
+    environment:
+      REDIS_REPLICATION_MODE: master
+  image_generator:
+    image: amouat/dnmonster
+    restart: always
+    ports:
+      - 8080:8080
+  app:
+    build: ./
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/project
+    links:
+      - postgres
+      - redis
+      - image_generator
+    depends_on:
+      - redis
+      - postgres
+      - image_generator
+    command: python ./main.py
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./data/nginx-data/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    links:
+      - app

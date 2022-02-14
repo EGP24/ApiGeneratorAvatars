@@ -1,0 +1,10 @@
+.env
+/venv
+test.py
+/data
+/tests
+/.pytest_cache
+/.idea
+/__pycache__
+run_test_project.yaml
+/data
